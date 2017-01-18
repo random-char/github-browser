@@ -12,7 +12,6 @@ class LikeController extends Controller
 {
     public function actionVote($type, $name)
     {
-        file_put_contents('/tmp/q', $type . "\n" . $name);
         if ($type == 'user') {
             $like = UserLikes::findOne(['username' => $name]);
             if (empty($like)) {
