@@ -113,3 +113,15 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+/*
+custom css
+*/
+#search-form .help-block {
+    display: none;
+}
+
+.user-avatar {
+    width: 100px;
+    height: 100px;
+}
