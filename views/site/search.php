@@ -30,7 +30,7 @@ $this->title = 'Mobidev is cool indeed :^)';
                         <div class="col-xs-4">
                             <?= Html::a(
                                 $repoData->name . ($isLiked ? ' <i class="fa fa-star "></i>' : ''),
-                                '/view/' . $repoData->full_name
+                                '/view/' . $repoData->owner->login . '/' . $repoData->name
                             );?>
                         </div>
                         <div class="col-xs-4">

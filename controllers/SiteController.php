@@ -37,15 +37,14 @@ class SiteController extends Controller
         return $this->render('search', ['searchTerm' => $searchRepo->q, 'reposData' => $reposData]);
     }
 
-    public function actionView($repoName = 'yiisoft/yii')
+    public function actionView($owner = 'yiisoft', $repoName = 'yii')
     {
         //get repo by name
-        $searchResults = $this->getCurlResult('https://api.github.com/search/repositories?q=' . urlencode($repoName) . '+in:full_name');
-        if ($searchResults->total_count == 0) {
+        $repoData = $this->getCurlResult('https://api.github.com/repos/' . urlencode($owner) . '/' . urlencode($repoName));
+
+        if (isset($repoData->message) && $repoData->message == 'Not Found') {
             throw new NotFoundHttpException('No repository was found by this request!');
         }
-        //get best match only
-        $repoData = $searchResults->items[0];
 
         //get repos contributors
         //get 10 (at max) first contributors
