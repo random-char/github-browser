@@ -3,9 +3,10 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use app\models\SearchRepo;
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use yii\widgets\ActiveForm;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
@@ -27,32 +28,32 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => 'GitHub Browser',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
+            'class' => 'navbar-default navbar-fixed-top',
         ],
     ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
-    ]);
+
+    $searchRepo = new SearchRepo();
+    $form = ActiveForm::begin([
+        'id' => 'search-form',
+        'action' => '/search',
+        'options' => [
+            'class' => 'navbar-form navbar-right',
+        ]
+    ]);?>
+    <div class="input-group">
+        <?=$form->field($searchRepo, 'q')
+            ->textInput(['placeholder' => "Search",'class' => 'form-control',])->label(false);
+        ?>
+        <span class="input-group-btn">
+            <?= Html::submitButton('<i class="fa fa-search"></i>', ['class' => 'btn btn-primary', 'name' => 'search-button']); ?>
+        </span>
+    </div>
+    <?php
+    ActiveForm::end();
+
     NavBar::end();
     ?>
 
@@ -66,7 +67,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <p class="pull-left">&copy; GitHub Browser <?= date('Y') ?></p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
