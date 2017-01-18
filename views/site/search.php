@@ -23,12 +23,13 @@ $this->title = 'Mobidev is cool indeed :^)';
                 Nothing found :c
             </div>
         <?php } else { ?>
-            <?php foreach ($reposData as $repoData) { ?>
+            <?php foreach ($reposData as $repoData) {
+                $isLiked = (bool) RepoLikes::findOne(['repo_fullname' => $repoData->full_name, 'value' => '1']);?>
                 <div class="row search-result">
                     <div class="search-result-header">
                         <div class="col-xs-4">
                             <?= Html::a(
-                                $repoData->name,
+                                $repoData->name . ($isLiked ? ' <i class="fa fa-star "></i>' : ''),
                                 '/view/' . $repoData->full_name
                             );?>
                         </div>
@@ -58,7 +59,6 @@ $this->title = 'Mobidev is cool indeed :^)';
                     </div>
                     <div class="col-xs-4">
                         <?php
-                        $isLiked = (bool) RepoLikes::findOne(['repo_fullname' => $repoData->full_name, 'value' => '1']);
                         echo Html::button(
                             $isLiked ? 'UnLike' : 'Like',
                             ['class' => 'btn ' . ($isLiked ? 'btn-danger' : 'btn-success'), 'data-name' => $repoData->full_name, 'onclick' => "vote(this, 'repo')"]);
