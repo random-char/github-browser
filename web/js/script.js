@@ -1,5 +1,4 @@
 function vote(element, type) {
-    console.log(element);
     $.ajax({
         url: "/like/" + type + "/" + $(element).data("name"),
         success: function(){
