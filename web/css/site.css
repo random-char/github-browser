@@ -145,8 +145,8 @@ custom css
     margin-bottom: 5px;
 }
 
-.center {
-    align-content: center;
+.btn-no-padding {
+    padding: 0px 12px;
 }
 
 /*
