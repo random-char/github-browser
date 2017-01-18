@@ -4,10 +4,10 @@ function vote(element, type) {
         success: function(){
         if ($(element).hasClass("btn-success")) {
             $(element).removeClass("btn-success").addClass("btn-danger");
-            $(element).text('UnLike');
+            $(element).html('<i class="fa fa-thumbs-down" aria-hidden="true"></i>');
         } else {
             $(element).removeClass("btn-danger").addClass("btn-success");
-            $(element).text('Like');
+            $(element).html('<i class="fa fa-thumbs-up" aria-hidden="true"></i>');
         }
     }});
 }
