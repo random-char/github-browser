@@ -57,14 +57,11 @@ AppAsset::register($this);
     NavBar::end();
     ?>
 
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
+    <div class="container" style="min-height: 100%">
         <?= $content ?>
     </div>
 </div>
-
+<?php if (false) {?>
 <footer class="footer">
     <div class="container">
         <p class="pull-left">&copy; GitHub Browser <?= date('Y') ?></p>
@@ -72,7 +69,7 @@ AppAsset::register($this);
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
 </footer>
-
+<?php } ?>
 <?php $this->endBody() ?>
 </body>
 </html>
