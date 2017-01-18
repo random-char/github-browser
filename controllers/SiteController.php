@@ -2,124 +2,76 @@
 
 namespace app\controllers;
 
+use app\models\SearchRepo;
 use Yii;
-use yii\filters\AccessControl;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
+use yii\web\NotFoundHttpException;
 
 class SiteController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function actions()
     {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-    public function actionIndex()
+    public function actionSearch()
     {
-        return $this->render('index');
-    }
-
-    /**
-     * Login action.
-     *
-     * @return string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+        $searchRepo = new SearchRepo();
+        $searchRepo->load(\Yii::$app->request->post());
+        if (is_null($searchRepo->q)) {
+            $searchRepo->q = '';
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        $searchResult = $this->getCurlResult('https://api.github.com/search/repositories?q=' . urlencode($searchRepo->q));
+        if (empty($searchResult->errors)) {
+            $reposData = $searchResult->items;
+        } else {
+            throw new BadRequestHttpException('We cannot search by empty string :/');
         }
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+
+        return $this->render('search', ['searchTerm' => $searchRepo->q, 'reposData' => $reposData]);
     }
 
-    /**
-     * Logout action.
-     *
-     * @return string
-     */
-    public function actionLogout()
+    public function actionView($repoName = 'yiisoft/yii')
     {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
+        //get repo by name
+        $searchResults = $this->getCurlResult('https://api.github.com/search/repositories?q=' . urlencode($repoName) . '+in:full_name');
+        if ($searchResults->total_count == 0) {
+            throw new NotFoundHttpException('No repository was found by this request!');
         }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
+        //get best match only
+        $repoData = $searchResults->items[0];
+
+        //get repos contributors
+        //get 10 (at max) first contributors
+        $repoContributors = array_slice($this->getCurlResult($repoData->contributors_url), 0, 10);
+
+        return $this->render('view', ['repoData' => $repoData, 'repoContributors' => $repoContributors]);
     }
 
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
+    public function actionUser($username = '')
     {
-        return $this->render('about');
+        ///users/:username
+        $userData = $this->getCurlResult('https://api.github.com/users/' . urlencode($username));
+        if (!isset($userData->login)) {
+            throw new NotFoundHttpException('No user found with such name: ' . $username . '!');
+        }
+        return $this->render('user', ['userData' => $userData]);
+    }
+
+    private function getCurlResult($url)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'GitHubBrowserBot');
+        $result = json_decode(curl_exec($ch));
+        curl_close($ch);
+
+        return $result;
     }
 }
