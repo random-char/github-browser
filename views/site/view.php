@@ -10,7 +10,6 @@ $this->title = 'Mobidev is cool indeed :^)';
 ?>
 <div class="site-search">
     <div class="body-content">
-
         <div class="row">
             <div class="col-md-6">
                 <div class="row">
@@ -59,13 +58,13 @@ $this->title = 'Mobidev is cool indeed :^)';
                         <?php
                         $isLiked = (bool) UserLikes::findOne(['username' => $repoContributor->login, 'value' => '1']);
                         echo Html::button(
-                            $isLiked ? 'UnLike' : 'Like',
-                            ['class' => 'btn ' . ($isLiked ? 'btn-danger' : 'btn-success'), 'data-name' => $repoContributor->login, 'onclick' => "vote(this, 'user')"]); ?>
+                            $isLiked ? '<i class="fa fa-thumbs-down" aria-hidden="true"></i>' : '<i class="fa fa-thumbs-up" aria-hidden="true"></i>',
+                            ['class' => 'btn btn-no-padding ' . ($isLiked ? 'btn-danger' : 'btn-success'), 'data-name' => $repoContributor->login, 'onclick' => "vote(this, 'user')"]); ?>
                         </div>
                     </div>
                 <?php } ?>
                 </div>
             </div>
-
+        </div>
     </div>
 </div>

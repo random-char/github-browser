@@ -60,8 +60,8 @@ $this->title = 'Mobidev is cool indeed :^)';
                     <div class="col-xs-4">
                         <?php
                         echo Html::button(
-                            $isLiked ? 'UnLike' : 'Like',
-                            ['class' => 'btn ' . ($isLiked ? 'btn-danger' : 'btn-success'), 'data-name' => $repoData->full_name, 'onclick' => "vote(this, 'repo')"]);
+                            $isLiked ? '<i class="fa fa-thumbs-down" aria-hidden="true"></i>' : '<i class="fa fa-thumbs-up" aria-hidden="true"></i>',
+                            ['class' => 'btn btn-no-padding ' . ($isLiked ? 'btn-danger' : 'btn-success'), 'data-name' => $repoData->full_name, 'onclick' => "vote(this, 'repo')"]);
                         ?>
                     </div>
                 </div>

@@ -6,6 +6,7 @@ use app\models\UserLikes;
 use yii\helpers\Html;
 
 $this->title = 'Mobidev is cool indeed :^)';
+$isLiked = (bool) UserLikes::findOne(['username' => $userData->login, 'value' => '1']);
 ?>
 <div class="site-user">
     <div class="body-content"">
@@ -13,26 +14,24 @@ $this->title = 'Mobidev is cool indeed :^)';
             <a class="twPc-bg twPc-block"></a>
 
             <div>
-                <div class="twPc-button">
-                    <?php
-                    $isLiked = (bool) UserLikes::findOne(['username' => $userData->login, 'value' => '1']);
-                    echo Html::button(
-                        $isLiked ? 'UnLike' : 'Like',
-                        ['class' => 'btn ' . ($isLiked ? 'btn-danger' : 'btn-success'), 'data-name' => $userData->login, 'onclick' => "vote(this, 'user')"]);
-                    ?>
-                </div>
-
                 <span class="twPc-avatarLink">
                     <img alt="<?=$userData->name?>" src="<?=$userData->avatar_url?>" class="twPc-avatarImg">
                 </span>
 
                 <div class="twPc-divUser">
                     <div class="twPc-divName">
-                        <?=$userData->name?>
+                        <?=$userData->name . ($isLiked ? ' <i class="fa fa-star "></i>' : '')?>
                     </div>
-			<span>
-                <?=$userData->login?>
-			</span>
+                    <span>
+                        <?=$userData->login?>
+                    </span>
+                    <div class="twPc-button">
+                        <?php
+                        echo Html::button(
+                            $isLiked ? '<i class="fa fa-thumbs-down" aria-hidden="true"></i>' : '<i class="fa fa-thumbs-up" aria-hidden="true"></i>',
+                            ['class' => 'btn ' . ($isLiked ? 'btn-danger' : 'btn-success'), 'data-name' => $userData->login, 'onclick' => "vote(this, 'user')"]);
+                        ?>
+                    </div>
                 </div>
 
                 <div class="twPc-divStats">
@@ -56,8 +55,5 @@ $this->title = 'Mobidev is cool indeed :^)';
             </div>
         </div>
         <!-- code end -->
-
-
-
     </div>
 </div>
