@@ -42,6 +42,7 @@ $config = [
                 '' => 'site/view',
                 'view/<repoName:[a-zA-Z0-9_\-\\\/\+\ ]+>' => 'site/view',
                 'user/<username:[a-zA-Z0-9_\-\\\/\+\ ]+>' => 'site/user',
+                'like/<type:\w+>/<name:[a-zA-Z0-9_\-\\\/\+\ ]+>' => 'like/vote',
                 '<action:\w+>' => 'site/<action>',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
             ),
