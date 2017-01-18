@@ -125,3 +125,22 @@ custom css
     width: 100px;
     height: 100px;
 }
+
+.search-result {
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #f0f0f0
+}
+
+.search-result-header {
+    width: 100%;
+    float: left;
+    margin-bottom: 5px;
+}
+
+.search-result-description {
+    width: 100%;
+    float: left;
+    margin-bottom: 5px;
+}
